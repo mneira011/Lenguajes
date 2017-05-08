@@ -1,16 +1,101 @@
 using gold.**
 procedure main(args:String[]) begin
-	GAutomataFrame.show(createTransducer())
+	Lexer = createTransducer()
+	Parser = createAutomaton()
+	testParser(Lexer,Parser)
 end
-var hola: Integer
+procedure testParser(M:ITransducer,P:IPushdownAutomaton) begin
+	var sc:java.util.Scanner(System.$in)
+	while true do
+		print "----------------------------"
+		print "Digite la cadena de entrada:"
+		string:=sc.nextLine()+" " 
+		result:=M.acceptsString(string)    
+		tokenStream := M.getOutputString()
+		print "Lexicamente, la cadena fue "+(result?"aceptada":"rechazada")+". Resultado: "+tokenStream 
+		result:=P.acceptsString(tokenStream )
+		print "Sintácticamente, la cadena fue "+(result?"aceptada":"rechazada")
+		
+	end
+end 
+function createAutomaton():IPushdownAutomaton begin
+⧐P := E
+⧐P := P E
+⧐E := R
+⧐E := C
+⧐R := F .
+⧐R := F :- Fs .
+⧐C := ?- G .
+⧐G := F
+⧐G := B
+⧐G := G , F
+⧐G := G , B
+⧐B := isAtom( B )
+⧐B := isVar( B )
+⧐B := isNumber( B )
+⧐B := fail
+⧐B := !
+⧐F := NAME ( X )
+⧐F := NAME
+⧐X := A
+⧐X := X , A
+⧐A := F
+⧐A := VAR
+⧐A := NUMBER
+⧐A := [ ]
+⧐A := [ X | A ]
+⧐A := [ X ]
+	
+	Terms := {'?',':',' ','-','[',']','{','}','!','.',',','<','(',')','|','a','f','x','y','z','n','v','q'}
+	NonTerms := {'P','E','R','C','F','G','B','X','A'}
+	Q:={"I","q","F"}
+	Σ:=Terms
+	Γ:=Terms ∪ NonTerms ∪ {'$'}
+	q₀:="I"
+	F:={"F"}
+	M:=GPushdownAutomaton(Q,Terms,Γ,q₀,F)
+	M.delta("I","q","").push("$E")
+	M.delta("q","F","").pop("$")
+	
+	for each x in Terms do
+	  M.delta("q","q",""+x).pop(""+x)
+	end
+	M.delta("q","q","").changeTop("P","E")
+	M.delta("q","q","").changeTop("P","EP")
+	M.delta("q","q","").changeTop("E","R")
+	M.delta("q","q","").changeTop("E","C")
+	M.delta("q","q","").changeTop("R",".F")
+	M.delta("q","q","").changeTop("R",".G<F")
+	M.delta("q","q","").changeTop("C",".Gq")
+	M.delta("q","q","").changeTop("G","F")
+	M.delta("q","q","").changeTop("G","B")
+	M.delta("q","q","").changeTop("G","F,G")
+	M.delta("q","q","").changeTop("G","B,G")
+	M.delta("q","q","").changeTop("B",")B(y")
+	M.delta("q","q","").changeTop("B",")B(x")
+	M.delta("q","q","").changeTop("B",")B(z")
+	M.delta("q","q","").changeTop("B","f")
+	M.delta("q","q","").changeTop("B","!")
+	M.delta("q","q","").changeTop("F",")X(a")
+	M.delta("q","q","").changeTop("F","a")
+	M.delta("q","q","").changeTop("X","A")
+	M.delta("q","q","").changeTop("X","A,X")
+	M.delta("q","q","").changeTop("A","F")
+	M.delta("q","q","").changeTop("A","n")
+	M.delta("q","q","").changeTop("A","v")
+	M.delta("q","q","").changeTop("A","][")
+	M.delta("q","q","").changeTop("A","]A|X[")
+	M.delta("q","q","").changeTop("A","]X[")
+return M
+end
 function createTransducer():ITransducer begin
-	Q:={"Inicio","Error","Numero","?",":","minus","mayus","f","a","i","l","i1","s","v","a1","r","a2","t","o","m","n","u","m","b","e","r"}
-	CE:={' '}
-	Σ:=('a'‥'z')∪('A'‥'Z')∪('0'‥'9')∪{'?',':'}
+	Q:={"Inicio","Error","Numero","?",":","minus","mayus","f","a","i","l","i1","s","v","a1","r","a2","t","o","m","n","u","m1","b","e","r1"}
+	Σ:=('a'‥'z')∪('A'‥'Z')∪('0'‥'9')∪{'?',':',' ','-','[',']','{','}','!','.',',','<','(',')','|'}
 	q₀:="Inicio"
 	F:={"Inicio"}
 	return 	GDeterministicTransducer(Q,Σ,Σ,q₀,F,δ,g,h)
 end
+
 function δ(q,σ) begin
 	if q="Inicio" then
 		if σ='?' then
@@ -21,13 +106,14 @@ function δ(q,σ) begin
 			return "Numero"
 		elseif σ='i' then
 			return "i1"
-		elseif σ∈('A'‥'Z') then
-			return "mayus"
 		elseif σ='f' then
 			return "f"
-		
+		elseif σ∈('A'‥'Z') then
+			return "mayus"
+		elseif σ∈('a'‥'z') then
+			return "minus"
 		else
-			return "Error"
+			return "Inicio"
 		end
 	elseif q="Numero" then
 		if σ='?' then
@@ -36,18 +122,390 @@ function δ(q,σ) begin
 			return ":"
 		elseif σ∈('0'‥'9') then
 			return "Numero"
-		elseif σ∈('0'‥'9') then
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
 			return "Inicio"
 		else
 			return "Error"
 		end
+	elseif q="?" then
+		if	σ='-' then
+			return "Inicio"
+		else
+			return "Error"
+		end
+	elseif q=":" then
+		if	σ='-' then
+			return "Inicio"
+		else
+			return "Error"
+		end
+	elseif q="mayus" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "mayus"
+		end
+	elseif q="minus" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="f" then
+		if	σ='a' then
+			return "a"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="a" then
+		if	σ='i' then
+			return "i"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="i" then
+		if	σ='l' then
+			return "l"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="l" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="i1" then
+		if	σ='s' then
+			return "s"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="s" then
+		if	σ='V' then
+			return "v"
+		elseif σ='A' then
+			return "a2"
+		elseif σ='N' then
+			return "n" 
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'}then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="v" then
+		if	σ='a' then
+			return "a1"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="a1" then
+		if	σ='r' then
+			return "r"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="r" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="a2" then
+		if	σ='t' then
+			return "t"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="t" then
+		if	σ='o' then
+			return "o"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="o" then
+		if	σ='m' then
+			return "m"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="m" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="n" then
+		if	σ='u' then
+			return "u"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="u" then
+		if	σ='m' then
+			return "m1"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="m1" then
+		if	σ='b' then
+			return "b"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="b" then
+		if	σ='e' then
+			return "e"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="e" then
+		if	σ='r' then
+			return "r1"
+		elseif σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
+	elseif q="r1" then
+		if σ∈{' ','-','[',']','{','}','!','.',',','(',')','|'} then
+			return "Inicio"
+		else
+			return "minus"
+		end
 	else
-		
+		return "Error"
 	end	
 end
 function g(q) begin
 	return λ
 end
 function h(q,σ) begin
-	
+	if q="Inicio" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return σ+""	
+		else
+			return λ
+		end
+	elseif q="?" then
+		if σ='-' then
+			return "q"
+		else
+			return "ERROR"
+		end
+	elseif q=":" then
+		if σ='-' then
+			return "<"
+		else
+			return "ERROR"
+		end
+	elseif q="Numero" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "n"+""+σ+""
+		elseif σ=' ' then
+			return "n"
+		else
+			return λ
+		end
+	elseif q="mayus" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "v"+""+σ+""
+		elseif σ=' ' then
+			return "v"
+		else
+			return λ
+		end
+	elseif q="minus" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		elseif σ=' ' then
+			return "a"
+		else
+			return λ
+		end
+	elseif q="f" then
+		if	σ='a' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'}then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="a" then
+		if	σ='i' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="i" then
+		if	σ='l' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="l" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "f"+""+σ+""
+		elseif σ=' ' then
+			return "f"
+		else
+			return λ
+		end
+	elseif q="i1" then
+		if	σ='s' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="s" then
+		if	σ='V' then
+			return λ
+		elseif σ='A' then
+			return λ
+		elseif σ='N' then
+			return λ	
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="v" then
+		if	σ='a' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="a1" then
+		if	σ='r' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="r" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "x"+""+σ+""
+		elseif σ=' ' then
+			return "x"
+		else
+			return λ
+		end
+	elseif q="a2" then
+		if	σ='t' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="t" then
+		if	σ='o' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="o" then
+		if	σ='m' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="m" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "y"+""+σ+""
+		elseif σ=' ' then
+			return "y"
+		else
+			return λ
+		end
+	elseif q="n" then
+		if	σ='u' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="u" then
+		if	σ='m' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="m1" then
+		if	σ='b' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="b" then
+		if	σ='e' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="e" then
+		if	σ='r' then
+			return λ
+		elseif σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "a"+""+σ+""
+		else
+			return λ
+		end
+	elseif q="r1" then
+		if σ∈{'-','[',']','{','}','!','.',',','(',')','|'} then
+			return "z"+""+σ+""
+		elseif σ=' ' then
+			return "z"
+		else
+			return λ
+		end
+	else
+		return λ
+	end
 end

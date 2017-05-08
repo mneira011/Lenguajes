@@ -1,5 +1,6 @@
 using gold.**
 
+
 procedure main(args:String[]) begin
    P = createAutomaton()
 	 testAutomaton(P)

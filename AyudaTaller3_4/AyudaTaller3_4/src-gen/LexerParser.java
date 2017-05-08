@@ -15,11 +15,11 @@ public final class LexerParser {
     Object $result=null;
     $try:try {
       $line=5;
-      Object Lexer=$fix($invokeMethod(LexerParser.class,"createTransducer",true,null,new Object[]{}));
+      Object Lexer=$fix(LexerParser.createTransducer());
       $line=6;
-      Object Parser=$fix($invokeMethod(LexerParser.class,"createAutomaton",true,null,new Object[]{}));
+      Object Parser=$fix(LexerParser.createAutomaton());
       $line=9;
-      $invokeMethod(LexerParser.class,"testParser",true,null,new Object[]{Lexer,Parser});
+      LexerParser.testParser($cast(gold.structures.automaton.ITransducer.class,Lexer),$cast(gold.structures.automaton.IPushdownAutomaton.class,Parser));
     }
     catch (Throwable $throwable) {
       $rethrow($throwable,LexerParser.class,"main",$line);

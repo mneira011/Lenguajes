@@ -19,7 +19,6 @@ import gold.structures.tree.*;
 import gold.structures.tree.binary.*;
 import gold.structures.tree.nary.*;
 import gold.structures.tuple.*;
-import gold.structures.turingMachine.*;
 import gold.swing.*;
 import gold.swing.icon.*;
 import gold.swing.icon.ajaxload.*;
@@ -39,7 +38,6 @@ import gold.visualization.*;
 import gold.visualization.automaton.*;
 import gold.visualization.graph.*;
 import gold.visualization.quadtree.*;
-import gold.visualization.turingMachine.*;
 import gold.visualization.util.*;
 import java.lang.*;
 import org.apfloat.*;
@@ -54,41 +52,158 @@ public final class punto4 {
     Object $result=null;
     $try:try {
       $line=3;
-      GAutomataFrame.show($cast(gold.structures.automaton.IAutomaton.class,punto4.createTransducer()));
+      Object Lexer=$fix(punto4.createTransducer());
+      $line=4;
+      Object Parser=$fix(punto4.createAutomaton());
+      $line=5;
+      punto4.testParser($cast(gold.structures.automaton.ITransducer.class,Lexer),$cast(gold.structures.automaton.IPushdownAutomaton.class,Parser));
     }
     catch (Throwable $throwable) {
       $rethrow($throwable,punto4.class,"main",$line);
     }
   }
-  public static Integer hola=null;
-  static {
+  public static Object testParser(ITransducer M, IPushdownAutomaton P) {
     int $line=0;
-    $line=5;
+    Object $result=null;
     $try:try {
-      hola=$defaultValue(Integer.class);
+      $line=8;
+      java.util.Scanner sc=null;
+      sc=$invokeConstructor(java.util.Scanner.class,new Object[]{$invokeField(System.class,"in",true,null)});
+      $line=9;
+      while (true) {
+        if (!($bool(true))) break;
+        $line=10;
+        System.out.println($message(new Object[]{"----------------------------"}));
+        $line=11;
+        System.out.println($message(new Object[]{"Digite la cadena de entrada:"}));
+        $line=12;
+        Object string=$fix($opAdditY(((java.util.Scanner)sc).nextLine()," "));
+        $line=13;
+        Object result=$fix(((gold.structures.automaton.ITransducer)M).acceptsString($cast(java.lang.String.class,string)));
+        $line=14;
+        Object tokenStream=$fix(((gold.structures.automaton.ITransducer)M).getOutputString());
+        $line=15;
+        System.out.println($message(new Object[]{$opAdditY($opAdditY($opAdditY("Lexicamente, la cadena fue ",(($bool(result))?("aceptada"):("rechazada"))),". Resultado: "),tokenStream)}));
+        $line=16;
+        result=$fix(((gold.structures.automaton.IPushdownAutomaton)P).acceptsString($cast(java.lang.String.class,tokenStream)));
+        $line=17;
+        System.out.println($message(new Object[]{$opAdditY("Sint\u00E1cticamente, la cadena fue ",(($bool(result))?("aceptada"):("rechazada")))}));
+      }
     }
     catch (Throwable $throwable) {
-      $rethrow($throwable,punto4.class,null,$line);
+      $rethrow($throwable,punto4.class,"testParser",$line);
     }
+    return $result;
+  }
+  public static IPushdownAutomaton createAutomaton() {
+    int $line=0;
+    Object $result=null;
+    $try:try {
+      $line=49;
+      Object Terms=$fix(GCollections.asSet('?',':',' ','-','[',']','{','}','!','.',',','<','(',')','|','a','f','x','y','z','n','v','q'));
+      $line=50;
+      Object NonTerms=$fix(GCollections.asSet('P','E','R','C','F','G','B','X','A'));
+      $line=51;
+      Object Q=$fix(GCollections.asSet("I","q","F"));
+      $line=52;
+      Object \u03A3=$fix(Terms);
+      $line=53;
+      Object \u0393=$fix($opUnionY($opUnionY(Terms,NonTerms),GCollections.asSet('$')));
+      $line=54;
+      Object q_0=$fix("I");
+      $line=55;
+      Object F=$fix(GCollections.asSet("F"));
+      $line=56;
+      Object M=$fix($invokeConstructor(GPushdownAutomaton.class,new Object[]{Q,Terms,\u0393,q_0,F}));
+      $line=57;
+      $invokeMethod("push",((gold.structures.automaton.GPushdownAutomaton)M).delta("I","q",$cast(java.lang.String.class,"")),new Object[]{"$E"});
+      $line=58;
+      $invokeMethod("pop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","F",$cast(java.lang.String.class,"")),new Object[]{"$"});
+      $line=60;
+      for (Object $v1:GCollections.unmodifiableCollection(Terms)) {
+        Object x=$v1;
+        $line=61;
+        $invokeMethod("pop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,$opAdditY("",x))),new Object[]{$opAdditY("",x)});
+      }
+      $line=63;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"P","E"});
+      $line=64;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"P","EP"});
+      $line=65;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"E","R"});
+      $line=66;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"E","C"});
+      $line=67;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"R",".F"});
+      $line=68;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"R",".G<F"});
+      $line=69;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"C",".Gq"});
+      $line=70;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"G","F"});
+      $line=71;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"G","B"});
+      $line=72;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"G","F,G"});
+      $line=73;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"G","B,G"});
+      $line=74;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"B",")B(y"});
+      $line=75;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"B",")B(x"});
+      $line=76;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"B",")B(z"});
+      $line=77;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"B","f"});
+      $line=78;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"B","!"});
+      $line=79;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"F",")X(a"});
+      $line=80;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"F","a"});
+      $line=81;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"X","A"});
+      $line=82;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"X","A,X"});
+      $line=83;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","F"});
+      $line=84;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","n"});
+      $line=85;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","v"});
+      $line=86;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","]["});
+      $line=87;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","]A|X["});
+      $line=88;
+      $invokeMethod("changeTop",((gold.structures.automaton.GPushdownAutomaton)M).delta("q","q",$cast(java.lang.String.class,"")),new Object[]{"A","]X["});
+      $line=89;
+      $result=M;
+      if (true) break $try;
+      $line=90;
+      $rethrow(new RuntimeException("The function \"createAutomaton()\" did not return a value."));
+    }
+    catch (Throwable $throwable) {
+      $rethrow($throwable,punto4.class,"createAutomaton",$line);
+    }
+    return $cast(IPushdownAutomaton.class,$result);
   }
   public static ITransducer createTransducer() {
     int $line=0;
     Object $result=null;
     $try:try {
-      $line=7;
-      Object Q=$fix(GCollections.asSet("Inicio","Error","Numero","?",":","minus","mayus","f","a","i","l","i1","s","v","a1","r","a2","t","o","m","n","u","m","b","e","r"));
-      $line=8;
-      Object CE=$fix(GCollections.asSet(' '));
-      $line=9;
-      Object \u03A3=$fix($opUnionY($opUnionY($opUnionY($opIntvlY('a','z'),$opIntvlY('A','Z')),$opIntvlY('0','9')),GCollections.asSet('?',':')));
-      $line=10;
+      $line=92;
+      Object Q=$fix(GCollections.asSet("Inicio","Error","Numero","?",":","minus","mayus","f","a","i","l","i1","s","v","a1","r","a2","t","o","m","n","u","m1","b","e","r1"));
+      $line=93;
+      Object \u03A3=$fix($opUnionY($opUnionY($opUnionY($opIntvlY('a','z'),$opIntvlY('A','Z')),$opIntvlY('0','9')),GCollections.asSet('?',':',' ','-','[',']','{','}','!','.',',','<','(',')','|')));
+      $line=94;
       Object q_0=$fix("Inicio");
-      $line=11;
+      $line=95;
       Object F=$fix(GCollections.asSet("Inicio"));
-      $line=12;
+      $line=96;
       $result=$invokeConstructor(GDeterministicTransducer.class,new Object[]{Q,\u03A3,\u03A3,q_0,F,new GMethod(punto4.class,"\u03B4"),new GMethod(punto4.class,"g"),new GMethod(punto4.class,"h")});
       if (true) break $try;
-      $line=13;
+      $line=97;
       $rethrow(new RuntimeException("The function \"createTransducer()\" did not return a value."));
     }
     catch (Throwable $throwable) {
@@ -100,53 +215,61 @@ public final class punto4 {
     int $line=0;
     Object $result=null;
     $try:try {
-      $line=15;
+      $line=100;
       if ($opEqualY(q,"Inicio")) {
-        $line=16;
+        $line=101;
         if ($opEqualY(\u03C3,'?')) {
-          $line=17;
+          $line=102;
           $result="?";
           if (true) break $try;
         }
         else {
-          $line=18;
+          $line=103;
           if ($opEqualY(\u03C3,':')) {
-            $line=19;
+            $line=104;
             $result=":";
             if (true) break $try;
           }
           else {
-            $line=20;
+            $line=105;
             if ($opMembrY(\u03C3,$opIntvlY('0','9'))) {
-              $line=21;
+              $line=106;
               $result="Numero";
               if (true) break $try;
             }
             else {
-              $line=22;
+              $line=107;
               if ($opEqualY(\u03C3,'i')) {
-                $line=23;
+                $line=108;
                 $result="i1";
                 if (true) break $try;
               }
               else {
-                $line=24;
-                if ($opMembrY(\u03C3,$opIntvlY('A','Z'))) {
-                  $line=25;
-                  $result="mayus";
+                $line=109;
+                if ($opEqualY(\u03C3,'f')) {
+                  $line=110;
+                  $result="f";
                   if (true) break $try;
                 }
                 else {
-                  $line=26;
-                  if ($opEqualY(\u03C3,'f')) {
-                    $line=27;
-                    $result="f";
+                  $line=111;
+                  if ($opMembrY(\u03C3,$opIntvlY('A','Z'))) {
+                    $line=112;
+                    $result="mayus";
                     if (true) break $try;
                   }
                   else {
-                    $line=30;
-                    $result="Error";
-                    if (true) break $try;
+                    $line=113;
+                    if ($opMembrY(\u03C3,$opIntvlY('a','z'))) {
+                      $line=114;
+                      $result="minus";
+                      if (true) break $try;
+                    }
+                    else {
+                      $line=116;
+                      $result="Inicio";
+                      if (true) break $try;
+                    }
                   }
                 }
               }
@@ -155,37 +278,37 @@ public final class punto4 {
         }
       }
       else {
-        $line=32;
+        $line=118;
         if ($opEqualY(q,"Numero")) {
-          $line=33;
+          $line=119;
           if ($opEqualY(\u03C3,'?')) {
-            $line=34;
+            $line=120;
             $result="?";
             if (true) break $try;
           }
           else {
-            $line=35;
+            $line=121;
             if ($opEqualY(\u03C3,':')) {
-              $line=36;
+              $line=122;
               $result=":";
               if (true) break $try;
             }
             else {
-              $line=37;
+              $line=123;
               if ($opMembrY(\u03C3,$opIntvlY('0','9'))) {
-                $line=38;
+                $line=124;
                 $result="Numero";
                 if (true) break $try;
               }
               else {
-                $line=39;
-                if ($opMembrY(\u03C3,$opIntvlY('0','9'))) {
-                  $line=40;
+                $line=125;
+                if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                  $line=126;
                   $result="Inicio";
                   if (true) break $try;
                 }
                 else {
-                  $line=42;
+                  $line=128;
                   $result="Error";
                   if (true) break $try;
                 }
@@ -194,9 +317,516 @@ public final class punto4 {
           }
         }
         else {
+          $line=130;
+          if ($opEqualY(q,"?")) {
+            $line=131;
+            if ($opEqualY(\u03C3,'-')) {
+              $line=132;
+              $result="Inicio";
+              if (true) break $try;
+            }
+            else {
+              $line=134;
+              $result="Error";
+              if (true) break $try;
+            }
+          }
+          else {
+            $line=136;
+            if ($opEqualY(q,":")) {
+              $line=137;
+              if ($opEqualY(\u03C3,'-')) {
+                $line=138;
+                $result="Inicio";
+                if (true) break $try;
+              }
+              else {
+                $line=140;
+                $result="Error";
+                if (true) break $try;
+              }
+            }
+            else {
+              $line=142;
+              if ($opEqualY(q,"mayus")) {
+                $line=143;
+                if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                  $line=144;
+                  $result="Inicio";
+                  if (true) break $try;
+                }
+                else {
+                  $line=146;
+                  $result="mayus";
+                  if (true) break $try;
+                }
+              }
+              else {
+                $line=148;
+                if ($opEqualY(q,"minus")) {
+                  $line=149;
+                  if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                    $line=150;
+                    $result="Inicio";
+                    if (true) break $try;
+                  }
+                  else {
+                    $line=152;
+                    $result="minus";
+                    if (true) break $try;
+                  }
+                }
+                else {
+                  $line=154;
+                  if ($opEqualY(q,"f")) {
+                    $line=155;
+                    if ($opEqualY(\u03C3,'a')) {
+                      $line=156;
+                      $result="a";
+                      if (true) break $try;
+                    }
+                    else {
+                      $line=157;
+                      if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                        $line=158;
+                        $result="Inicio";
+                        if (true) break $try;
+                      }
+                      else {
+                        $line=160;
+                        $result="minus";
+                        if (true) break $try;
+                      }
+                    }
+                  }
+                  else {
+                    $line=162;
+                    if ($opEqualY(q,"a")) {
+                      $line=163;
+                      if ($opEqualY(\u03C3,'i')) {
+                        $line=164;
+                        $result="i";
+                        if (true) break $try;
+                      }
+                      else {
+                        $line=165;
+                        if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                          $line=166;
+                          $result="Inicio";
+                          if (true) break $try;
+                        }
+                        else {
+                          $line=168;
+                          $result="minus";
+                          if (true) break $try;
+                        }
+                      }
+                    }
+                    else {
+                      $line=170;
+                      if ($opEqualY(q,"i")) {
+                        $line=171;
+                        if ($opEqualY(\u03C3,'l')) {
+                          $line=172;
+                          $result="l";
+                          if (true) break $try;
+                        }
+                        else {
+                          $line=173;
+                          if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                            $line=174;
+                            $result="Inicio";
+                            if (true) break $try;
+                          }
+                          else {
+                            $line=176;
+                            $result="minus";
+                            if (true) break $try;
+                          }
+                        }
+                      }
+                      else {
+                        $line=178;
+                        if ($opEqualY(q,"l")) {
+                          $line=179;
+                          if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                            $line=180;
+                            $result="Inicio";
+                            if (true) break $try;
+                          }
+                          else {
+                            $line=182;
+                            $result="minus";
+                            if (true) break $try;
+                          }
+                        }
+                        else {
+                          $line=184;
+                          if ($opEqualY(q,"i1")) {
+                            $line=185;
+                            if ($opEqualY(\u03C3,'s')) {
+                              $line=186;
+                              $result="s";
+                              if (true) break $try;
+                            }
+                            else {
+                              $line=187;
+                              if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                $line=188;
+                                $result="Inicio";
+                                if (true) break $try;
+                              }
+                              else {
+                                $line=190;
+                                $result="minus";
+                                if (true) break $try;
+                              }
+                            }
+                          }
+                          else {
+                            $line=192;
+                            if ($opEqualY(q,"s")) {
+                              $line=193;
+                              if ($opEqualY(\u03C3,'V')) {
+                                $line=194;
+                                $result="v";
+                                if (true) break $try;
+                              }
+                              else {
+                                $line=195;
+                                if ($opEqualY(\u03C3,'A')) {
+                                  $line=196;
+                                  $result="a2";
+                                  if (true) break $try;
+                                }
+                                else {
+                                  $line=197;
+                                  if ($opEqualY(\u03C3,'N')) {
+                                    $line=198;
+                                    $result="n";
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=199;
+                                    if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=200;
+                                      $result="Inicio";
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=202;
+                                      $result="minus";
+                                      if (true) break $try;
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                            else {
+                              $line=204;
+                              if ($opEqualY(q,"v")) {
+                                $line=205;
+                                if ($opEqualY(\u03C3,'a')) {
+                                  $line=206;
+                                  $result="a1";
+                                  if (true) break $try;
+                                }
+                                else {
+                                  $line=207;
+                                  if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                    $line=208;
+                                    $result="Inicio";
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=210;
+                                    $result="minus";
+                                    if (true) break $try;
+                                  }
+                                }
+                              }
+                              else {
+                                $line=212;
+                                if ($opEqualY(q,"a1")) {
+                                  $line=213;
+                                  if ($opEqualY(\u03C3,'r')) {
+                                    $line=214;
+                                    $result="r";
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=215;
+                                    if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=216;
+                                      $result="Inicio";
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=218;
+                                      $result="minus";
+                                      if (true) break $try;
+                                    }
+                                  }
+                                }
+                                else {
+                                  $line=220;
+                                  if ($opEqualY(q,"r")) {
+                                    $line=221;
+                                    if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=222;
+                                      $result="Inicio";
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=224;
+                                      $result="minus";
+                                      if (true) break $try;
+                                    }
+                                  }
+                                  else {
+                                    $line=226;
+                                    if ($opEqualY(q,"a2")) {
+                                      $line=227;
+                                      if ($opEqualY(\u03C3,'t')) {
+                                        $line=228;
+                                        $result="t";
+                                        if (true) break $try;
+                                      }
+                                      else {
+                                        $line=229;
+                                        if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                          $line=230;
+                                          $result="Inicio";
+                                          if (true) break $try;
+                                        }
+                                        else {
+                                          $line=232;
+                                          $result="minus";
+                                          if (true) break $try;
+                                        }
+                                      }
+                                    }
+                                    else {
+                                      $line=234;
+                                      if ($opEqualY(q,"t")) {
+                                        $line=235;
+                                        if ($opEqualY(\u03C3,'o')) {
+                                          $line=236;
+                                          $result="o";
+                                          if (true) break $try;
+                                        }
+                                        else {
+                                          $line=237;
+                                          if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                            $line=238;
+                                            $result="Inicio";
+                                            if (true) break $try;
+                                          }
+                                          else {
+                                            $line=240;
+                                            $result="minus";
+                                            if (true) break $try;
+                                          }
+                                        }
+                                      }
+                                      else {
+                                        $line=242;
+                                        if ($opEqualY(q,"o")) {
+                                          $line=243;
+                                          if ($opEqualY(\u03C3,'m')) {
+                                            $line=244;
+                                            $result="m";
+                                            if (true) break $try;
+                                          }
+                                          else {
+                                            $line=245;
+                                            if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                              $line=246;
+                                              $result="Inicio";
+                                              if (true) break $try;
+                                            }
+                                            else {
+                                              $line=248;
+                                              $result="minus";
+                                              if (true) break $try;
+                                            }
+                                          }
+                                        }
+                                        else {
+                                          $line=250;
+                                          if ($opEqualY(q,"m")) {
+                                            $line=251;
+                                            if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                              $line=252;
+                                              $result="Inicio";
+                                              if (true) break $try;
+                                            }
+                                            else {
+                                              $line=254;
+                                              $result="minus";
+                                              if (true) break $try;
+                                            }
+                                          }
+                                          else {
+                                            $line=256;
+                                            if ($opEqualY(q,"n")) {
+                                              $line=257;
+                                              if ($opEqualY(\u03C3,'u')) {
+                                                $line=258;
+                                                $result="u";
+                                                if (true) break $try;
+                                              }
+                                              else {
+                                                $line=259;
+                                                if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                  $line=260;
+                                                  $result="Inicio";
+                                                  if (true) break $try;
+                                                }
+                                                else {
+                                                  $line=262;
+                                                  $result="minus";
+                                                  if (true) break $try;
+                                                }
+                                              }
+                                            }
+                                            else {
+                                              $line=264;
+                                              if ($opEqualY(q,"u")) {
+                                                $line=265;
+                                                if ($opEqualY(\u03C3,'m')) {
+                                                  $line=266;
+                                                  $result="m1";
+                                                  if (true) break $try;
+                                                }
+                                                else {
+                                                  $line=267;
+                                                  if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                    $line=268;
+                                                    $result="Inicio";
+                                                    if (true) break $try;
+                                                  }
+                                                  else {
+                                                    $line=270;
+                                                    $result="minus";
+                                                    if (true) break $try;
+                                                  }
+                                                }
+                                              }
+                                              else {
+                                                $line=272;
+                                                if ($opEqualY(q,"m1")) {
+                                                  $line=273;
+                                                  if ($opEqualY(\u03C3,'b')) {
+                                                    $line=274;
+                                                    $result="b";
+                                                    if (true) break $try;
+                                                  }
+                                                  else {
+                                                    $line=275;
+                                                    if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                      $line=276;
+                                                      $result="Inicio";
+                                                      if (true) break $try;
+                                                    }
+                                                    else {
+                                                      $line=278;
+                                                      $result="minus";
+                                                      if (true) break $try;
+                                                    }
+                                                  }
+                                                }
+                                                else {
+                                                  $line=280;
+                                                  if ($opEqualY(q,"b")) {
+                                                    $line=281;
+                                                    if ($opEqualY(\u03C3,'e')) {
+                                                      $line=282;
+                                                      $result="e";
+                                                      if (true) break $try;
+                                                    }
+                                                    else {
+                                                      $line=283;
+                                                      if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                        $line=284;
+                                                        $result="Inicio";
+                                                        if (true) break $try;
+                                                      }
+                                                      else {
+                                                        $line=286;
+                                                        $result="minus";
+                                                        if (true) break $try;
+                                                      }
+                                                    }
+                                                  }
+                                                  else {
+                                                    $line=288;
+                                                    if ($opEqualY(q,"e")) {
+                                                      $line=289;
+                                                      if ($opEqualY(\u03C3,'r')) {
+                                                        $line=290;
+                                                        $result="r1";
+                                                        if (true) break $try;
+                                                      }
+                                                      else {
+                                                        $line=291;
+                                                        if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                          $line=292;
+                                                          $result="Inicio";
+                                                          if (true) break $try;
+                                                        }
+                                                        else {
+                                                          $line=294;
+                                                          $result="minus";
+                                                          if (true) break $try;
+                                                        }
+                                                      }
+                                                    }
+                                                    else {
+                                                      $line=296;
+                                                      if ($opEqualY(q,"r1")) {
+                                                        $line=297;
+                                                        if ($opMembrY(\u03C3,GCollections.asSet(' ','-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                          $line=298;
+                                                          $result="Inicio";
+                                                          if (true) break $try;
+                                                        }
+                                                        else {
+                                                          $line=300;
+                                                          $result="minus";
+                                                          if (true) break $try;
+                                                        }
+                                                      }
+                                                      else {
+                                                        $line=303;
+                                                        $result="Error";
+                                                        if (true) break $try;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
-      $line=47;
+      $line=305;
       $rethrow(new RuntimeException("The function \"\u03B4(q:Object,\u03C3:Object)\" did not return a value."));
     }
     catch (Throwable $throwable) {
@@ -208,10 +838,10 @@ public final class punto4 {
     int $line=0;
     Object $result=null;
     $try:try {
-      $line=49;
+      $line=307;
       $result="";
       if (true) break $try;
-      $line=50;
+      $line=308;
       $rethrow(new RuntimeException("The function \"g(q:Object)\" did not return a value."));
     }
     catch (Throwable $throwable) {
@@ -223,7 +853,602 @@ public final class punto4 {
     int $line=0;
     Object $result=null;
     $try:try {
-      $line=53;
+      $line=310;
+      if ($opEqualY(q,"Inicio")) {
+        $line=311;
+        if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+          $line=312;
+          $result=$opAdditY(\u03C3,"");
+          if (true) break $try;
+        }
+        else {
+          $line=314;
+          $result="";
+          if (true) break $try;
+        }
+      }
+      else {
+        $line=316;
+        if ($opEqualY(q,"?")) {
+          $line=317;
+          if ($opEqualY(\u03C3,'-')) {
+            $line=318;
+            $result="q";
+            if (true) break $try;
+          }
+          else {
+            $line=320;
+            $result="ERROR";
+            if (true) break $try;
+          }
+        }
+        else {
+          $line=322;
+          if ($opEqualY(q,":")) {
+            $line=323;
+            if ($opEqualY(\u03C3,'-')) {
+              $line=324;
+              $result="<";
+              if (true) break $try;
+            }
+            else {
+              $line=326;
+              $result="ERROR";
+              if (true) break $try;
+            }
+          }
+          else {
+            $line=328;
+            if ($opEqualY(q,"Numero")) {
+              $line=329;
+              if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                $line=330;
+                $result=$opAdditY($opAdditY($opAdditY("n",""),\u03C3),"");
+                if (true) break $try;
+              }
+              else {
+                $line=331;
+                if ($opEqualY(\u03C3,' ')) {
+                  $line=332;
+                  $result="n";
+                  if (true) break $try;
+                }
+                else {
+                  $line=334;
+                  $result="";
+                  if (true) break $try;
+                }
+              }
+            }
+            else {
+              $line=336;
+              if ($opEqualY(q,"mayus")) {
+                $line=337;
+                if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                  $line=338;
+                  $result=$opAdditY($opAdditY($opAdditY("v",""),\u03C3),"");
+                  if (true) break $try;
+                }
+                else {
+                  $line=339;
+                  if ($opEqualY(\u03C3,' ')) {
+                    $line=340;
+                    $result="v";
+                    if (true) break $try;
+                  }
+                  else {
+                    $line=342;
+                    $result="";
+                    if (true) break $try;
+                  }
+                }
+              }
+              else {
+                $line=344;
+                if ($opEqualY(q,"minus")) {
+                  $line=345;
+                  if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                    $line=346;
+                    $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                    if (true) break $try;
+                  }
+                  else {
+                    $line=347;
+                    if ($opEqualY(\u03C3,' ')) {
+                      $line=348;
+                      $result="a";
+                      if (true) break $try;
+                    }
+                    else {
+                      $line=350;
+                      $result="";
+                      if (true) break $try;
+                    }
+                  }
+                }
+                else {
+                  $line=352;
+                  if ($opEqualY(q,"f")) {
+                    $line=353;
+                    if ($opEqualY(\u03C3,'a')) {
+                      $line=354;
+                      $result="";
+                      if (true) break $try;
+                    }
+                    else {
+                      $line=355;
+                      if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                        $line=356;
+                        $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                        if (true) break $try;
+                      }
+                      else {
+                        $line=358;
+                        $result="";
+                        if (true) break $try;
+                      }
+                    }
+                  }
+                  else {
+                    $line=360;
+                    if ($opEqualY(q,"a")) {
+                      $line=361;
+                      if ($opEqualY(\u03C3,'i')) {
+                        $line=362;
+                        $result="";
+                        if (true) break $try;
+                      }
+                      else {
+                        $line=363;
+                        if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                          $line=364;
+                          $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                          if (true) break $try;
+                        }
+                        else {
+                          $line=366;
+                          $result="";
+                          if (true) break $try;
+                        }
+                      }
+                    }
+                    else {
+                      $line=368;
+                      if ($opEqualY(q,"i")) {
+                        $line=369;
+                        if ($opEqualY(\u03C3,'l')) {
+                          $line=370;
+                          $result="";
+                          if (true) break $try;
+                        }
+                        else {
+                          $line=371;
+                          if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                            $line=372;
+                            $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                            if (true) break $try;
+                          }
+                          else {
+                            $line=374;
+                            $result="";
+                            if (true) break $try;
+                          }
+                        }
+                      }
+                      else {
+                        $line=376;
+                        if ($opEqualY(q,"l")) {
+                          $line=377;
+                          if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                            $line=378;
+                            $result=$opAdditY($opAdditY($opAdditY("f",""),\u03C3),"");
+                            if (true) break $try;
+                          }
+                          else {
+                            $line=379;
+                            if ($opEqualY(\u03C3,' ')) {
+                              $line=380;
+                              $result="f";
+                              if (true) break $try;
+                            }
+                            else {
+                              $line=382;
+                              $result="";
+                              if (true) break $try;
+                            }
+                          }
+                        }
+                        else {
+                          $line=384;
+                          if ($opEqualY(q,"i1")) {
+                            $line=385;
+                            if ($opEqualY(\u03C3,'s')) {
+                              $line=386;
+                              $result="";
+                              if (true) break $try;
+                            }
+                            else {
+                              $line=387;
+                              if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                $line=388;
+                                $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                if (true) break $try;
+                              }
+                              else {
+                                $line=390;
+                                $result="";
+                                if (true) break $try;
+                              }
+                            }
+                          }
+                          else {
+                            $line=392;
+                            if ($opEqualY(q,"s")) {
+                              $line=393;
+                              if ($opEqualY(\u03C3,'V')) {
+                                $line=394;
+                                $result="";
+                                if (true) break $try;
+                              }
+                              else {
+                                $line=395;
+                                if ($opEqualY(\u03C3,'A')) {
+                                  $line=396;
+                                  $result="";
+                                  if (true) break $try;
+                                }
+                                else {
+                                  $line=397;
+                                  if ($opEqualY(\u03C3,'N')) {
+                                    $line=398;
+                                    $result="";
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=399;
+                                    if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=400;
+                                      $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=402;
+                                      $result="";
+                                      if (true) break $try;
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                            else {
+                              $line=404;
+                              if ($opEqualY(q,"v")) {
+                                $line=405;
+                                if ($opEqualY(\u03C3,'a')) {
+                                  $line=406;
+                                  $result="";
+                                  if (true) break $try;
+                                }
+                                else {
+                                  $line=407;
+                                  if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                    $line=408;
+                                    $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=410;
+                                    $result="";
+                                    if (true) break $try;
+                                  }
+                                }
+                              }
+                              else {
+                                $line=412;
+                                if ($opEqualY(q,"a1")) {
+                                  $line=413;
+                                  if ($opEqualY(\u03C3,'r')) {
+                                    $line=414;
+                                    $result="";
+                                    if (true) break $try;
+                                  }
+                                  else {
+                                    $line=415;
+                                    if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=416;
+                                      $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=418;
+                                      $result="";
+                                      if (true) break $try;
+                                    }
+                                  }
+                                }
+                                else {
+                                  $line=420;
+                                  if ($opEqualY(q,"r")) {
+                                    $line=421;
+                                    if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                      $line=422;
+                                      $result=$opAdditY($opAdditY($opAdditY("x",""),\u03C3),"");
+                                      if (true) break $try;
+                                    }
+                                    else {
+                                      $line=423;
+                                      if ($opEqualY(\u03C3,' ')) {
+                                        $line=424;
+                                        $result="x";
+                                        if (true) break $try;
+                                      }
+                                      else {
+                                        $line=426;
+                                        $result="";
+                                        if (true) break $try;
+                                      }
+                                    }
+                                  }
+                                  else {
+                                    $line=428;
+                                    if ($opEqualY(q,"a2")) {
+                                      $line=429;
+                                      if ($opEqualY(\u03C3,'t')) {
+                                        $line=430;
+                                        $result="";
+                                        if (true) break $try;
+                                      }
+                                      else {
+                                        $line=431;
+                                        if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                          $line=432;
+                                          $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                          if (true) break $try;
+                                        }
+                                        else {
+                                          $line=434;
+                                          $result="";
+                                          if (true) break $try;
+                                        }
+                                      }
+                                    }
+                                    else {
+                                      $line=436;
+                                      if ($opEqualY(q,"t")) {
+                                        $line=437;
+                                        if ($opEqualY(\u03C3,'o')) {
+                                          $line=438;
+                                          $result="";
+                                          if (true) break $try;
+                                        }
+                                        else {
+                                          $line=439;
+                                          if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                            $line=440;
+                                            $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                            if (true) break $try;
+                                          }
+                                          else {
+                                            $line=442;
+                                            $result="";
+                                            if (true) break $try;
+                                          }
+                                        }
+                                      }
+                                      else {
+                                        $line=444;
+                                        if ($opEqualY(q,"o")) {
+                                          $line=445;
+                                          if ($opEqualY(\u03C3,'m')) {
+                                            $line=446;
+                                            $result="";
+                                            if (true) break $try;
+                                          }
+                                          else {
+                                            $line=447;
+                                            if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                              $line=448;
+                                              $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                              if (true) break $try;
+                                            }
+                                            else {
+                                              $line=450;
+                                              $result="";
+                                              if (true) break $try;
+                                            }
+                                          }
+                                        }
+                                        else {
+                                          $line=452;
+                                          if ($opEqualY(q,"m")) {
+                                            $line=453;
+                                            if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                              $line=454;
+                                              $result=$opAdditY($opAdditY($opAdditY("y",""),\u03C3),"");
+                                              if (true) break $try;
+                                            }
+                                            else {
+                                              $line=455;
+                                              if ($opEqualY(\u03C3,' ')) {
+                                                $line=456;
+                                                $result="y";
+                                                if (true) break $try;
+                                              }
+                                              else {
+                                                $line=458;
+                                                $result="";
+                                                if (true) break $try;
+                                              }
+                                            }
+                                          }
+                                          else {
+                                            $line=460;
+                                            if ($opEqualY(q,"n")) {
+                                              $line=461;
+                                              if ($opEqualY(\u03C3,'u')) {
+                                                $line=462;
+                                                $result="";
+                                                if (true) break $try;
+                                              }
+                                              else {
+                                                $line=463;
+                                                if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                  $line=464;
+                                                  $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                                  if (true) break $try;
+                                                }
+                                                else {
+                                                  $line=466;
+                                                  $result="";
+                                                  if (true) break $try;
+                                                }
+                                              }
+                                            }
+                                            else {
+                                              $line=468;
+                                              if ($opEqualY(q,"u")) {
+                                                $line=469;
+                                                if ($opEqualY(\u03C3,'m')) {
+                                                  $line=470;
+                                                  $result="";
+                                                  if (true) break $try;
+                                                }
+                                                else {
+                                                  $line=471;
+                                                  if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                    $line=472;
+                                                    $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                                    if (true) break $try;
+                                                  }
+                                                  else {
+                                                    $line=474;
+                                                    $result="";
+                                                    if (true) break $try;
+                                                  }
+                                                }
+                                              }
+                                              else {
+                                                $line=476;
+                                                if ($opEqualY(q,"m1")) {
+                                                  $line=477;
+                                                  if ($opEqualY(\u03C3,'b')) {
+                                                    $line=478;
+                                                    $result="";
+                                                    if (true) break $try;
+                                                  }
+                                                  else {
+                                                    $line=479;
+                                                    if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                      $line=480;
+                                                      $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                                      if (true) break $try;
+                                                    }
+                                                    else {
+                                                      $line=482;
+                                                      $result="";
+                                                      if (true) break $try;
+                                                    }
+                                                  }
+                                                }
+                                                else {
+                                                  $line=484;
+                                                  if ($opEqualY(q,"b")) {
+                                                    $line=485;
+                                                    if ($opEqualY(\u03C3,'e')) {
+                                                      $line=486;
+                                                      $result="";
+                                                      if (true) break $try;
+                                                    }
+                                                    else {
+                                                      $line=487;
+                                                      if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                        $line=488;
+                                                        $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                                        if (true) break $try;
+                                                      }
+                                                      else {
+                                                        $line=490;
+                                                        $result="";
+                                                        if (true) break $try;
+                                                      }
+                                                    }
+                                                  }
+                                                  else {
+                                                    $line=492;
+                                                    if ($opEqualY(q,"e")) {
+                                                      $line=493;
+                                                      if ($opEqualY(\u03C3,'r')) {
+                                                        $line=494;
+                                                        $result="";
+                                                        if (true) break $try;
+                                                      }
+                                                      else {
+                                                        $line=495;
+                                                        if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                          $line=496;
+                                                          $result=$opAdditY($opAdditY($opAdditY("a",""),\u03C3),"");
+                                                          if (true) break $try;
+                                                        }
+                                                        else {
+                                                          $line=498;
+                                                          $result="";
+                                                          if (true) break $try;
+                                                        }
+                                                      }
+                                                    }
+                                                    else {
+                                                      $line=500;
+                                                      if ($opEqualY(q,"r1")) {
+                                                        $line=501;
+                                                        if ($opMembrY(\u03C3,GCollections.asSet('-','[',']','{','}','!','.',',','(',')','|'))) {
+                                                          $line=502;
+                                                          $result=$opAdditY($opAdditY($opAdditY("z",""),\u03C3),"");
+                                                          if (true) break $try;
+                                                        }
+                                                        else {
+                                                          $line=503;
+                                                          if ($opEqualY(\u03C3,' ')) {
+                                                            $line=504;
+                                                            $result="z";
+                                                            if (true) break $try;
+                                                          }
+                                                          else {
+                                                            $line=506;
+                                                            $result="";
+                                                            if (true) break $try;
+                                                          }
+                                                        }
+                                                      }
+                                                      else {
+                                                        $line=509;
+                                                        $result="";
+                                                        if (true) break $try;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      $line=511;
       $rethrow(new RuntimeException("The function \"h(q:Object,\u03C3:Object)\" did not return a value."));
     }
     catch (Throwable $throwable) {
