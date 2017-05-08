@@ -1,0 +1,109 @@
+using gold.**
+var palabras:int
+var letras:int
+var letra:char
+var letraTemp:char
+var primera: boolean
+procedure main(args:String[]) begin
+	
+	Q := {'1','2', '3','4','5','6'}
+   Σ := {' ','a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','.'}∪('0'‥'9')
+	qI := '1'
+	F := { '5' }
+	M:=GDeterministicTransducer(Q,Σ,Σ,qI,F,δ,g,h)
+⧐	palabras:=0
+⧐	letras:=0
+⧐	modulo1:=0
+⧐	modulo2:=0
+⧐	primera:=true
+⧐	letraTemp:=' '
+⧐	letra:=' '
+	GAutomataFrame . show ( M )
+	palabras:=0
+	letras:=0
+	modulo1:=0
+	modulo2:=0
+	primera:=true
+	letraTemp:=' '
+	letra:=' '
+end
+function h(q,x) begin
+	if q='1' ∧ x∉{' ','.'}then
+		return letra 
+	elseif q='2' ∧ x=' ' then
+		return letra + "" + ((letras+palabras)%3)
+	
+	elseif q='2'∧ x=letra then
+		return (letras%5)
+	elseif q='2'∧ x∉{' ',letra,'.'} then
+		return letraTemp
+	elseif q = '2' ∧ x = '.' then
+		return letra + "" + ((letras+palabras)%3)+'.'
+	else
+		return λ
+	end
+end
+ 
+function δ(q,x) begin
+	if q = '1' then
+		if	x!='.'∧x!=' '  then
+			letra :=x
+		
+			//palabras :=1
+			
+			
+		
+			palabras := palabras+1
+
+		
+			letras := 1
+
+			System . out . println("letraTemp "+letraTemp)
+		System . out . println("palabras "+palabras)
+		System . out . println("letras "+letras)
+		System . out . println("letra "+letra)
+			return '2'
+		else 
+			
+			return '5'
+		end
+	elseif q='2' then
+		letraTemp :=x
+		
+		
+		if x = ' ' then
+			return '1'
+		elseif x= '.' then
+			
+			return '5'
+		elseif x=letra then
+			System . out . println("elseif")
+				letras := letras +1
+				System . out . println("letraTemp "+letraTemp)
+				System . out . println("palabras "+palabras)
+				System . out . println("letras "+letras)
+				System . out . println("letra "+letra)
+				
+				return '2'
+		else
+			letras := letras +1
+			System . out . println("else")
+			System . out . println("letraTemp "+letraTemp)
+			System . out . println("palabras "+palabras)
+			System . out . println("letras "+letras)
+			System . out . println("letra "+letra)	
+			
+			return '2'
+		end
+		
+	
+	else
+	
+		return '5'
+	end
+end
+
+function g(q) begin
+	return λ
+end
+

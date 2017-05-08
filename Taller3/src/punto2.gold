@@ -1,0 +1,82 @@
+//Mauricio Neira - 201424001
+//Juan Felipe Ramos - 201616932
+using gold.**
+
+var letra:char
+var primera :boolean
+procedure main(args:String[]) begin
+	
+	
+	Q := {'0','1','2','5'}
+   Σ := {' ','a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','.'}∪('0'‥'9')
+	qI := '0'
+	F := { '5' }
+	
+	M:=GDeterministicTransducer(Q,Σ,Σ,qI,F,δ,g,h)
+
+	GAutomataFrame . show ( M )
+
+	letra:=' '
+	
+end
+
+function h(q,x) begin
+	
+	if q='1' ∧ x∉{' ','.'}∧ x∉('0'‥'9')  then
+		
+		
+			return ' '+""+letra
+		
+	elseif q = '0' then
+		return letra
+	elseif q='2' ∧ x∈('0'‥'9') then
+		
+		return letra
+	elseif q='2'∧ x∈('a'‥'z') ∧ x≠letra then
+		
+		
+		return x
+	elseif q='1'∧ x='.' then
+		
+		return '.'
+
+	else
+		
+		return λ
+	end
+end
+ 
+function δ(q,x) begin
+	
+	if q ∈{'1','0'} then
+		
+		if x∈('0'‥'9')  then
+			return '1'
+		elseif 	x!='.'∧x!=' '  then
+			letra:=x
+			return '2'
+		else 
+			
+			return '5'
+		end
+	elseif q='2' then
+		if x='.' then
+			
+			return '5'
+			
+		elseif x=letra then
+			return '1'
+		else
+			return '2'
+		end
+	else
+		primera :=true
+		return '5'
+	end
+end
+
+function g(q) begin
+	return λ
+end
+
+

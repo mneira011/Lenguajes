@@ -1,0 +1,1 @@
+INDEX VERSION 1.126+H:\6to\Lenguajes\Taller3\.metadata\.plugins\org.eclipse.jdt.core
